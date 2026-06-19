@@ -63,6 +63,11 @@ const updateProfile = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: 'User not found' });
 
+    if (req.body.username && req.body.username !== user.username) {
+      const taken = await User.findOne({ username: req.body.username });
+      if (taken) return res.status(400).json({ message: 'Username already taken' });
+      user.username = req.body.username;
+    }
     user.phone  = req.body.phone  ?? user.phone;
     user.avatar = req.body.avatar ?? user.avatar;
 
