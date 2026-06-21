@@ -186,4 +186,4 @@ All property prices are in **XAF (Central African CFA franc)**, displayed as **F
 
 ## License
 
-Academic project — Therese-Claire · 2026
+Academic project: Therese-Claire · 2026
