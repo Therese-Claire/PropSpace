@@ -233,7 +233,8 @@ async function seed() {
   await User.deleteMany({});
   console.log('Cleared existing data');
 
-  const users = await User.insertMany(SEED_USERS);
+  // Use User.create() one-by-one so the pre-save bcrypt hook runs on each
+  const users = await Promise.all(SEED_USERS.map(u => User.create(u)));
   console.log(`Created ${users.length} users`);
 
   const properties = SEED_PROPERTIES.map(p => ({
