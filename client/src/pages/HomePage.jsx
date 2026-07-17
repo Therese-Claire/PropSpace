@@ -27,7 +27,7 @@ export default function HomePage() {
       if (f.maxPrice) params.maxPrice = f.maxPrice
       if (f.type)     params.type     = f.type
       const { data } = await api.get('/properties', { params, signal: controller.signal })
-      setProperties(data)
+      setProperties(Array.isArray(data) ? data : [])
     } catch (err) {
       if (err?.name !== 'CanceledError') console.error(err)
     } finally {

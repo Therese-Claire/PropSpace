@@ -46,7 +46,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const controller = new AbortController()
     api.get('/properties/my', { signal: controller.signal })
-      .then(({ data }) => setProperties(data))
+      .then(({ data }) => setProperties(Array.isArray(data) ? data : []))
       .catch(err => { if (err?.name !== 'CanceledError') console.error(err) })
       .finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
