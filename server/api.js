@@ -4,12 +4,21 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
 dotenv.config();
-connectDB();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    res.status(500).json({ message: 'Database connection failed' });
+  }
+});
 
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/properties', require('./routes/propertyRoutes'));
