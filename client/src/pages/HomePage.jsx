@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../services/api'
 import PropertyCard from '../components/properties/PropertyCard'
+import { useLang } from '../hooks/useLang'
 
 const HERO_BG = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&auto=format&fit=crop'
 const FALLBACK = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop'
 const TYPES = ['', 'Apartment', 'House', 'Studio']
 
 export default function HomePage() {
+  const { t } = useLang()
   const [properties, setProperties] = useState([])
   const [loading, setLoading] = useState(true)
   const [heroSearch, setHeroSearch] = useState('')
@@ -97,7 +99,7 @@ export default function HomePage() {
               </svg>
               <input
                 className="bg-transparent border-none focus:ring-0 focus:outline-none text-on-surface w-full placeholder:text-on-surface-variant/50 text-base"
-                placeholder="Search by city — e.g. Douala, Kribi, Buea…"
+                placeholder={t('search_placeholder')}
                 type="text"
                 value={heroSearch}
                 onChange={e => setHeroSearch(e.target.value)}
@@ -108,7 +110,7 @@ export default function HomePage() {
               onClick={handleHeroExplore}
               className="w-full md:w-auto px-10 py-3 bg-secondary text-on-secondary font-semibold text-xs tracking-widest rounded-lg hover:opacity-90 active:scale-95 transition-all uppercase flex-shrink-0"
             >
-              Explore
+              {t('explore')}
             </button>
           </div>
         </div>
@@ -118,14 +120,14 @@ export default function HomePage() {
       <section className="py-20 px-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-end mb-12">
           <div>
-            <span className="text-secondary font-mono text-xs tracking-widest uppercase">Curated Selection</span>
-            <h3 className="font-display font-semibold text-on-surface text-3xl mt-1">Featured Estates</h3>
+            <span className="text-secondary font-mono text-xs tracking-widest uppercase">{t('curated_selection')}</span>
+            <h3 className="font-display font-semibold text-on-surface text-3xl mt-1">{t('featured_estates')}</h3>
           </div>
           <button
             onClick={() => allEstatesRef.current?.scrollIntoView({ behavior: 'smooth' })}
             className="text-primary text-xs font-semibold tracking-wider uppercase flex items-center gap-1 hover:gap-2 transition-all"
           >
-            View All
+            {t('view_all')}
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -246,17 +248,17 @@ export default function HomePage() {
         {/* Filter bar */}
         <div className="glass-card p-4 rounded-xl flex flex-col sm:flex-row flex-wrap gap-3 mb-8 items-end">
           <div className="flex-1 min-w-[160px]">
-            <label className="input-label">City</label>
+            <label className="input-label">{t('city')}</label>
             <input
               type="text"
               className="input-field"
-              placeholder="e.g. Douala"
+              placeholder={t('city_placeholder')}
               value={filters.city}
               onChange={e => handleFilterChange('city', e.target.value)}
             />
           </div>
           <div className="w-full sm:w-36">
-            <label className="input-label">Min Price (FCFA)</label>
+            <label className="input-label">{t('min_price')} (FCFA)</label>
             <input
               type="number"
               className="input-field font-mono"
@@ -266,38 +268,40 @@ export default function HomePage() {
             />
           </div>
           <div className="w-full sm:w-36">
-            <label className="input-label">Max Price (FCFA)</label>
+            <label className="input-label">{t('max_price')} (FCFA)</label>
             <input
               type="number"
               className="input-field font-mono"
-              placeholder="No limit"
+              placeholder={t('no_limit')}
               value={filters.maxPrice}
               onChange={e => handleFilterChange('maxPrice', e.target.value)}
             />
           </div>
           <div className="w-full sm:w-36">
-            <label className="input-label">Type</label>
+            <label className="input-label">{t('property_type')}</label>
             <select
               className="input-field"
               value={filters.type}
               onChange={e => handleFilterChange('type', e.target.value)}
             >
-              {TYPES.map(t => <option key={t} value={t}>{t || 'All Types'}</option>)}
+              {TYPES.map(type => (
+                <option key={type} value={type}>
+                  {type ? t('type_' + type) : t('all_types')}
+                </option>
+              ))}
             </select>
           </div>
           <button
             onClick={handleClearFilters}
             className="btn-secondary text-sm py-2 px-4 flex-shrink-0"
           >
-            Clear
+            {t('clear')}
           </button>
         </div>
 
         <div className="flex items-center justify-between mb-6">
           <h2 className="section-title">
-            {loading
-              ? 'Searching…'
-              : `${properties.length} Estate${properties.length !== 1 ? 's' : ''} Found`}
+            {loading ? t('searching') : t('estates_found')(properties.length)}
           </h2>
         </div>
 
@@ -307,8 +311,8 @@ export default function HomePage() {
           </div>
         ) : properties.length === 0 ? (
           <div className="glass-card p-16 text-center">
-            <p className="font-display text-on-surface text-2xl mb-2">No estates found</p>
-            <p className="text-on-surface-variant text-sm">Try adjusting your filters.</p>
+            <p className="font-display text-on-surface text-2xl mb-2">{t('no_estates_found')}</p>
+            <p className="text-on-surface-variant text-sm">{t('try_adjusting')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -327,8 +331,8 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
               ),
-              title: 'Verified Ownership',
-              body: 'Every listing on PropSpace undergoes rigorous title and deed verification to ensure absolute security for our clients.',
+              titleKey: 'verified_ownership',
+              bodyKey: 'verified_ownership_body',
             },
             {
               icon: (
@@ -336,8 +340,8 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
                 </svg>
               ),
-              title: 'Digital Portfolio',
-              body: 'Seamlessly manage your property portfolio through our secure platform, providing real-time equity tracking and market valuation.',
+              titleKey: 'digital_portfolio',
+              bodyKey: 'digital_portfolio_body',
             },
             {
               icon: (
@@ -345,16 +349,16 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
               ),
-              title: 'Private Concierge',
-              body: 'Access dedicated assistance for viewing arrangements, architectural consultations, and relocation logistics across Cameroon.',
+              titleKey: 'private_concierge',
+              bodyKey: 'private_concierge_body',
             },
-          ].map(({ icon, title, body }) => (
-            <div key={title} className="space-y-4">
+          ].map(({ icon, titleKey, bodyKey }) => (
+            <div key={titleKey} className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-primary-container/40 flex items-center justify-center">
                 {icon}
               </div>
-              <h4 className="font-display font-semibold text-on-surface text-xl">{title}</h4>
-              <p className="text-on-surface-variant text-sm leading-relaxed">{body}</p>
+              <h4 className="font-display font-semibold text-on-surface text-xl">{t(titleKey)}</h4>
+              <p className="text-on-surface-variant text-sm leading-relaxed">{t(bodyKey)}</p>
             </div>
           ))}
         </div>
@@ -367,10 +371,10 @@ export default function HomePage() {
           <p className="text-on-surface-variant text-xs mt-1">© 2026 PropSpace. All Rights Reserved.</p>
         </div>
         <div className="flex gap-6 text-sm text-on-surface-variant">
-          <Link to="/" className="hover:text-primary transition-colors">Estates</Link>
-          <Link to="/login" className="hover:text-primary transition-colors">Sign In</Link>
-          <Link to="/register" className="hover:text-primary transition-colors">Register</Link>
-          <Link to="/dashboard" className="hover:text-primary transition-colors">Portfolio</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t('footer_estates')}</Link>
+          <Link to="/login" className="hover:text-primary transition-colors">{t('footer_sign_in')}</Link>
+          <Link to="/register" className="hover:text-primary transition-colors">{t('footer_register')}</Link>
+          <Link to="/dashboard" className="hover:text-primary transition-colors">{t('footer_portfolio')}</Link>
         </div>
         <div className="flex gap-3">
           <svg className="w-5 h-5 text-on-surface-variant hover:text-primary transition-colors cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">

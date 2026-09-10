@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import api from '../services/api'
 import useAuth from '../hooks/useAuth'
+import { useLang } from '../hooks/useLang'
 import Spinner from '../components/common/Spinner'
 
 const FALLBACK = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&auto=format&fit=crop'
@@ -9,6 +10,7 @@ const FALLBACK = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w
 export default function PropertyDetailPage() {
   const { id } = useParams()
   const { user } = useAuth()
+  const { t } = useLang()
   const [property, setProperty] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -27,8 +29,8 @@ export default function PropertyDetailPage() {
   if (error || !property) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-on-surface-variant text-lg">{error || 'Property not found'}</p>
-        <Link to="/" className="btn-secondary">Back to Listings</Link>
+        <p className="text-on-surface-variant text-lg">{error || t('property_not_found')}</p>
+        <Link to="/" className="btn-secondary">{t('back_to_listings')}</Link>
       </div>
     )
   }
@@ -66,20 +68,20 @@ export default function PropertyDetailPage() {
           {/* Main content */}
           <div className="flex-1 space-y-6">
             <div className="glass-card p-6">
-              <h2 className="section-title text-2xl mb-4">About This Estate</h2>
+              <h2 className="section-title text-2xl mb-4">{t('about_estate')}</h2>
               <p className="text-on-surface-variant leading-relaxed text-base">{description}</p>
             </div>
 
             {owner && (
               <div className="glass-card p-6">
-                <h2 className="section-title text-xl mb-4">Listed By</h2>
+                <h2 className="section-title text-xl mb-4">{t('listed_by')}</h2>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold uppercase text-lg flex-shrink-0">
                     {owner.username?.[0]}
                   </div>
                   <div>
                     <p className="text-on-surface font-semibold">{owner.username}</p>
-                    <p className="text-on-surface-variant text-sm">PropSpace Agent</p>
+                    <p className="text-on-surface-variant text-sm">{t('propspace_agent')}</p>
                   </div>
                 </div>
               </div>
@@ -90,32 +92,32 @@ export default function PropertyDetailPage() {
           <div className="lg:w-80 space-y-5">
             <div className="glass-card p-6">
               <p className="text-on-surface-variant text-xs font-mono uppercase tracking-wider mb-2">
-                Listing Price
+                {t('listing_price')}
               </p>
               <p className="price-tag font-bold" style={{ fontSize: '2.25rem' }}>
                 FCFA {Number(price).toLocaleString()}
               </p>
 
               <div className="mt-6 space-y-3">
-                <button className="btn-primary w-full">Schedule a Tour</button>
-                <button className="btn-secondary w-full">Send Inquiry</button>
+                <button className="btn-primary w-full">{t('schedule_tour')}</button>
+                <button className="btn-secondary w-full">{t('send_inquiry')}</button>
               </div>
             </div>
 
             {isOwner && (
               <div className="glass-card p-6">
-                <p className="text-on-surface-variant text-sm mb-3">You own this listing</p>
+                <p className="text-on-surface-variant text-sm mb-3">{t('you_own_listing')}</p>
                 <Link
                   to={`/listings/edit/${property._id}`}
                   className="btn-secondary block text-center w-full"
                 >
-                  Edit Listing
+                  {t('edit_listing')}
                 </Link>
               </div>
             )}
 
             <Link to="/" className="block text-center text-on-surface-variant text-sm hover:text-on-surface transition-colors">
-              ← Back to all estates
+              ← {t('back_to_estates')}
             </Link>
           </div>
         </div>

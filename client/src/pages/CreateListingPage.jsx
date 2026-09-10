@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import api from '../services/api'
+import { useLang } from '../hooks/useLang'
 
 const TYPES = ['Apartment', 'House', 'Studio']
 
 export default function CreateListingPage() {
+  const { t } = useLang()
   const navigate = useNavigate()
   const [form, setForm] = useState({
     title: '', description: '', price: '', city: '', country: '', type: 'Apartment', imageUrl: '',
@@ -40,11 +42,9 @@ export default function CreateListingPage() {
     <div className="min-h-screen bg-background py-12 px-6">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-2">New Estate</p>
-          <h1 className="section-title text-3xl">List Your Property</h1>
-          <p className="text-on-surface-variant mt-2">
-            Enter the details of your exclusive residence to reach our global network of discerning buyers.
-          </p>
+          <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-2">{t('new_estate')}</p>
+          <h1 className="section-title text-3xl">{t('list_your_property')}</h1>
+          <p className="text-on-surface-variant mt-2">{t('list_subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card p-8 space-y-5">
@@ -55,11 +55,11 @@ export default function CreateListingPage() {
           )}
 
           <div>
-            <label className="input-label">Property Title</label>
+            <label className="input-label">{t('property_title')}</label>
             <input
               type="text"
               className="input-field"
-              placeholder="e.g. Azure Zenith Heights"
+              placeholder={t('title_placeholder')}
               value={form.title}
               onChange={set('title')}
               required
@@ -67,11 +67,11 @@ export default function CreateListingPage() {
           </div>
 
           <div>
-            <label className="input-label">Description</label>
+            <label className="input-label">{t('description')}</label>
             <textarea
               rows={4}
               className="input-field resize-none"
-              placeholder="Describe the estate, its features, and unique qualities..."
+              placeholder={t('description_placeholder')}
               value={form.description}
               onChange={set('description')}
               required
@@ -80,7 +80,7 @@ export default function CreateListingPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="input-label">Price (USD)</label>
+              <label className="input-label">{t('price_fcfa')}</label>
               <input
                 type="number"
                 min="0"
@@ -92,31 +92,33 @@ export default function CreateListingPage() {
               />
             </div>
             <div>
-              <label className="input-label">Property Type</label>
+              <label className="input-label">{t('property_type')}</label>
               <select className="input-field" value={form.type} onChange={set('type')}>
-                {TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                {TYPES.map(type => (
+                  <option key={type} value={type}>{t('type_' + type)}</option>
+                ))}
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="input-label">City</label>
+              <label className="input-label">{t('city_label')}</label>
               <input
                 type="text"
                 className="input-field"
-                placeholder="e.g. Bel Air"
+                placeholder={t('city_create_placeholder')}
                 value={form.city}
                 onChange={set('city')}
                 required
               />
             </div>
             <div>
-              <label className="input-label">Country</label>
+              <label className="input-label">{t('country')}</label>
               <input
                 type="text"
                 className="input-field"
-                placeholder="e.g. USA"
+                placeholder={t('country_placeholder')}
                 value={form.country}
                 onChange={set('country')}
                 required
@@ -125,7 +127,7 @@ export default function CreateListingPage() {
           </div>
 
           <div>
-            <label className="input-label">Primary Image URL</label>
+            <label className="input-label">{t('primary_image_url')}</label>
             <input
               type="url"
               className="input-field"
@@ -148,10 +150,10 @@ export default function CreateListingPage() {
 
           <div className="flex gap-4 pt-2">
             <button type="submit" className="btn-primary flex-1" disabled={loading}>
-              {loading ? 'Listing...' : 'List Property'}
+              {loading ? t('listing_btn') : t('list_property')}
             </button>
             <Link to="/dashboard" className="btn-secondary flex-1 text-center leading-[2.75rem]">
-              Cancel
+              {t('cancel')}
             </Link>
           </div>
         </form>

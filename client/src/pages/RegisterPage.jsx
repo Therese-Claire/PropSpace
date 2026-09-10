@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
+import { useLang } from '../hooks/useLang'
 import api from '../services/api'
 
 export default function RegisterPage() {
   const { login } = useAuth()
+  const { t } = useLang()
   const navigate = useNavigate()
   const [form, setForm] = useState({ username: '', email: '', password: '', confirm: '' })
   const [error, setError] = useState('')
@@ -15,7 +17,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    if (form.password !== form.confirm) return setError('Passwords do not match')
+    if (form.password !== form.confirm) return setError(t('passwords_no_match'))
     setLoading(true)
     try {
       const { data } = await api.post('/auth/register', {
@@ -37,8 +39,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-4">PropSpace</p>
-          <h1 className="font-display text-4xl font-bold text-on-surface">Join the Elite</h1>
-          <p className="text-on-surface-variant mt-2">Bespoke infrastructure for digital estates</p>
+          <h1 className="font-display text-4xl font-bold text-on-surface">{t('join_elite')}</h1>
+          <p className="text-on-surface-variant mt-2">{t('join_subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card p-8 space-y-5">
@@ -49,11 +51,11 @@ export default function RegisterPage() {
           )}
 
           <div>
-            <label className="input-label">Username</label>
+            <label className="input-label">{t('username')}</label>
             <input
               type="text"
               className="input-field"
-              placeholder="Your handle"
+              placeholder={t('username_placeholder')}
               value={form.username}
               onChange={set('username')}
               required
@@ -62,7 +64,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="input-label">Email Address</label>
+            <label className="input-label">{t('email_address')}</label>
             <input
               type="email"
               className="input-field"
@@ -75,7 +77,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="input-label">Password</label>
+            <label className="input-label">{t('password')}</label>
             <input
               type="password"
               className="input-field"
@@ -88,7 +90,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="input-label">Confirm Password</label>
+            <label className="input-label">{t('confirm_password')}</label>
             <input
               type="password"
               className="input-field"
@@ -101,20 +103,20 @@ export default function RegisterPage() {
           </div>
 
           <button type="submit" className="btn-primary w-full" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Create Account'}
+            {loading ? t('creating_account') : t('create_account')}
           </button>
 
           <p className="text-center text-on-surface-variant text-sm">
-            Already have an account?{' '}
+            {t('have_account')}{' '}
             <Link to="/login" className="text-secondary hover:opacity-80 font-semibold transition-opacity">
-              Sign In
+              {t('sign_in')}
             </Link>
           </p>
         </form>
 
         <div className="flex justify-center gap-4 mt-6">
-          <span className="chip">Network Active</span>
-          <span className="chip">Secure Encryption v4.2</span>
+          <span className="chip">{t('network_active')}</span>
+          <span className="chip">{t('secure_encryption')}</span>
         </div>
       </div>
     </div>

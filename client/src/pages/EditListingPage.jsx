@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import api from '../services/api'
+import { useLang } from '../hooks/useLang'
 import Spinner from '../components/common/Spinner'
 
 const TYPES = ['Apartment', 'House', 'Studio']
 
 export default function EditListingPage() {
   const { id } = useParams()
+  const { t } = useLang()
   const navigate = useNavigate()
   const [form, setForm] = useState(null)
   const [error, setError] = useState('')
@@ -58,9 +60,9 @@ export default function EditListingPage() {
     <div className="min-h-screen bg-background py-12 px-6">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-2">Edit Estate</p>
-          <h1 className="section-title text-3xl">Update Listing</h1>
-          <p className="text-on-surface-variant mt-2">Modify the details of your property listing.</p>
+          <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-2">{t('edit_estate')}</p>
+          <h1 className="section-title text-3xl">{t('update_listing')}</h1>
+          <p className="text-on-surface-variant mt-2">{t('edit_subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card p-8 space-y-5">
@@ -71,7 +73,7 @@ export default function EditListingPage() {
           )}
 
           <div>
-            <label className="input-label">Property Title</label>
+            <label className="input-label">{t('property_title')}</label>
             <input
               type="text"
               className="input-field"
@@ -82,7 +84,7 @@ export default function EditListingPage() {
           </div>
 
           <div>
-            <label className="input-label">Description</label>
+            <label className="input-label">{t('description')}</label>
             <textarea
               rows={4}
               className="input-field resize-none"
@@ -94,7 +96,7 @@ export default function EditListingPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="input-label">Price (USD)</label>
+              <label className="input-label">{t('price_fcfa')}</label>
               <input
                 type="number"
                 min="0"
@@ -105,16 +107,18 @@ export default function EditListingPage() {
               />
             </div>
             <div>
-              <label className="input-label">Property Type</label>
+              <label className="input-label">{t('property_type')}</label>
               <select className="input-field" value={form.type} onChange={set('type')}>
-                {TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                {TYPES.map(type => (
+                  <option key={type} value={type}>{t('type_' + type)}</option>
+                ))}
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="input-label">City</label>
+              <label className="input-label">{t('city_label')}</label>
               <input
                 type="text"
                 className="input-field"
@@ -124,7 +128,7 @@ export default function EditListingPage() {
               />
             </div>
             <div>
-              <label className="input-label">Country</label>
+              <label className="input-label">{t('country')}</label>
               <input
                 type="text"
                 className="input-field"
@@ -136,7 +140,7 @@ export default function EditListingPage() {
           </div>
 
           <div>
-            <label className="input-label">Primary Image URL</label>
+            <label className="input-label">{t('primary_image_url')}</label>
             <input
               type="url"
               className="input-field"
@@ -159,10 +163,10 @@ export default function EditListingPage() {
 
           <div className="flex gap-4 pt-2">
             <button type="submit" className="btn-primary flex-1" disabled={loading}>
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? t('saving') : t('save_changes')}
             </button>
             <Link to="/dashboard" className="btn-secondary flex-1 text-center leading-[2.75rem]">
-              Cancel
+              {t('cancel')}
             </Link>
           </div>
         </form>

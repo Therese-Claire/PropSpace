@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
+import { useLang } from '../hooks/useLang'
 import api from '../services/api'
 
 export default function LoginPage() {
   const { login } = useAuth()
+  const { t } = useLang()
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
@@ -32,8 +34,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-4">PropSpace</p>
-          <h1 className="font-display text-4xl font-bold text-on-surface">Welcome Back</h1>
-          <p className="text-on-surface-variant mt-2">Access your exclusive portfolio</p>
+          <h1 className="font-display text-4xl font-bold text-on-surface">{t('welcome_back')}</h1>
+          <p className="text-on-surface-variant mt-2">{t('access_portfolio')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card p-8 space-y-5">
@@ -44,7 +46,7 @@ export default function LoginPage() {
           )}
 
           <div>
-            <label className="input-label">Email Address</label>
+            <label className="input-label">{t('email_address')}</label>
             <input
               type="email"
               className="input-field"
@@ -57,7 +59,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="input-label">Password</label>
+            <label className="input-label">{t('password')}</label>
             <input
               type="password"
               className="input-field"
@@ -74,13 +76,13 @@ export default function LoginPage() {
             className="btn-primary w-full"
             disabled={loading}
           >
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? t('signing_in') : t('sign_in')}
           </button>
 
           <p className="text-center text-on-surface-variant text-sm">
-            Don&apos;t have an account?{' '}
+            {t('no_account')}{' '}
             <Link to="/register" className="text-secondary hover:opacity-80 font-semibold transition-opacity">
-              Register
+              {t('register')}
             </Link>
           </p>
         </form>

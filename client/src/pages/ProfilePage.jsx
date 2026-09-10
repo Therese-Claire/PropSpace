@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
+import { useLang } from '../hooks/useLang'
 import api from '../services/api'
 
 export default function ProfilePage() {
   const { user, login } = useAuth()
+  const { t } = useLang()
 
   const [profile, setProfile] = useState({
     username: user?.username || '',
@@ -33,7 +35,7 @@ export default function ProfilePage() {
         avatar:   profile.avatar,
       })
       login({ ...user, ...data })
-      setProfileMsg('Profile updated successfully')
+      setProfileMsg(t('profile_updated'))
     } catch (err) {
       setProfileError(err.response?.data?.message || 'Update failed')
     } finally {
@@ -44,14 +46,14 @@ export default function ProfilePage() {
   const changePassword = async (e) => {
     e.preventDefault()
     setPwMsg(''); setPwError('')
-    if (passwords.newPassword !== passwords.confirm) return setPwError('Passwords do not match')
+    if (passwords.newPassword !== passwords.confirm) return setPwError(t('passwords_no_match'))
     setPwLoading(true)
     try {
       await api.put('/auth/password', {
         oldPassword: passwords.oldPassword,
         newPassword: passwords.newPassword,
       })
-      setPwMsg('Password updated successfully')
+      setPwMsg(t('password_updated'))
       setPasswords({ oldPassword: '', newPassword: '', confirm: '' })
     } catch (err) {
       setPwError(err.response?.data?.message || 'Password change failed')
@@ -66,11 +68,9 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-background py-12 px-6">
       <div className="max-w-2xl mx-auto space-y-8">
         <div>
-          <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-2">Account</p>
-          <h1 className="section-title text-3xl">Account Architecture</h1>
-          <p className="text-on-surface-variant mt-2">
-            Configure your identity and security protocols within the PropSpace ecosystem.
-          </p>
+          <p className="text-primary uppercase tracking-[0.3em] text-xs font-mono mb-2">{t('account')}</p>
+          <h1 className="section-title text-3xl">{t('account_architecture')}</h1>
+          <p className="text-on-surface-variant mt-2">{t('account_subtitle')}</p>
         </div>
 
         {/* Identity card */}
@@ -84,21 +84,21 @@ export default function ProfilePage() {
             <div>
               <p className="font-display text-on-surface font-semibold text-xl">{profile.username || user?.username}</p>
               <p className="text-on-surface-variant text-sm">{user?.email}</p>
-              <span className="chip mt-2 inline-block">Premium Member</span>
+              <span className="chip mt-2 inline-block">{t('premium_member')}</span>
             </div>
           </div>
 
           <form onSubmit={saveProfile} className="space-y-5">
             <h2 className="text-on-surface font-semibold text-lg border-b border-outline-variant pb-3">
-              Personal Information
+              {t('personal_information')}
             </h2>
 
             <div>
-              <label className="input-label">Username</label>
+              <label className="input-label">{t('username')}</label>
               <input
                 type="text"
                 className="input-field"
-                placeholder="Your handle"
+                placeholder={t('username_placeholder')}
                 value={profile.username}
                 onChange={setP('username')}
                 required
@@ -107,7 +107,7 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="input-label">Email Address</label>
+              <label className="input-label">{t('email_address')}</label>
               <input
                 type="email"
                 className="input-field opacity-50 cursor-not-allowed"
@@ -117,22 +117,22 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="input-label">Phone Number</label>
+              <label className="input-label">{t('phone_number')}</label>
               <input
                 type="tel"
                 className="input-field"
-                placeholder="+1 (555) 000-0000"
+                placeholder={t('phone_placeholder')}
                 value={profile.phone}
                 onChange={setP('phone')}
               />
             </div>
 
             <div>
-              <label className="input-label">Avatar URL</label>
+              <label className="input-label">{t('avatar_url')}</label>
               <input
                 type="url"
                 className="input-field"
-                placeholder="https://example.com/your-photo.jpg"
+                placeholder={t('avatar_placeholder')}
                 value={profile.avatar}
                 onChange={setP('avatar')}
               />
@@ -142,7 +142,7 @@ export default function ProfilePage() {
             {profileError && <p className="text-error text-sm">{profileError}</p>}
 
             <button type="submit" className="btn-primary" disabled={profileLoading}>
-              {profileLoading ? 'Saving...' : 'Save Personal Info'}
+              {profileLoading ? t('saving') : t('save_personal_info')}
             </button>
           </form>
         </div>
@@ -150,16 +150,16 @@ export default function ProfilePage() {
         {/* Security card */}
         <div className="glass-card p-8">
           <h2 className="text-on-surface font-semibold text-lg border-b border-outline-variant pb-3 mb-5">
-            Security Protocols
+            {t('security_protocols')}
           </h2>
 
           <p className="text-on-surface-variant text-sm mb-6">
-            <span className="text-success font-mono">●</span>&nbsp; Two-factor authentication active
+            <span className="text-success font-mono">●</span>&nbsp; {t('two_factor_active')}
           </p>
 
           <form onSubmit={changePassword} className="space-y-5">
             <div>
-              <label className="input-label">Current Password</label>
+              <label className="input-label">{t('current_password')}</label>
               <input
                 type="password"
                 className="input-field"
@@ -172,7 +172,7 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="input-label">New Password</label>
+              <label className="input-label">{t('new_password')}</label>
               <input
                 type="password"
                 className="input-field"
@@ -185,7 +185,7 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="input-label">Confirm New Password</label>
+              <label className="input-label">{t('confirm_new_password')}</label>
               <input
                 type="password"
                 className="input-field"
@@ -201,7 +201,7 @@ export default function ProfilePage() {
             {pwError && <p className="text-error text-sm">{pwError}</p>}
 
             <button type="submit" className="btn-secondary" disabled={pwLoading}>
-              {pwLoading ? 'Updating...' : 'Update Security'}
+              {pwLoading ? t('updating') : t('update_security')}
             </button>
           </form>
         </div>

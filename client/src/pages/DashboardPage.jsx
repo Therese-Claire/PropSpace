@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../services/api'
 import useAuth from '../hooks/useAuth'
+import { useLang } from '../hooks/useLang'
 import Spinner from '../components/common/Spinner'
 
 const FALLBACK = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop'
@@ -39,6 +40,7 @@ const TrashIcon = () => (
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const { t } = useLang()
   const [properties, setProperties] = useState([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
@@ -72,30 +74,30 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      label: 'Portfolio Value',
+      label: t('portfolio_value'),
       value: totalValue > 0 ? `FCFA ${(totalValue / 1e6).toFixed(1)}M` : 'FCFA 0',
-      sub: 'Total estate worth',
+      sub: t('total_estate_worth'),
       icon: <TrendUpIcon />,
       color: 'text-secondary',
     },
     {
-      label: 'Total Listings',
+      label: t('total_listings'),
       value: properties.length,
-      sub: 'Managed properties',
+      sub: t('managed_properties'),
       icon: <EyeIcon />,
       color: 'text-primary',
     },
     {
-      label: 'Cities',
-      value: cities || '—',
-      sub: 'Across Cameroon',
+      label: t('cities_label'),
+      value: cities || 0,
+      sub: t('across_cameroon'),
       icon: <LocationIcon />,
       color: 'text-primary',
     },
     {
-      label: 'Status',
-      value: properties.length > 0 ? 'Active' : '—',
-      sub: 'Portfolio standing',
+      label: t('status'),
+      value: properties.length > 0 ? t('active') : 'N/A',
+      sub: t('portfolio_standing'),
       icon: <CheckIcon />,
       color: 'text-secondary',
     },
@@ -110,14 +112,14 @@ export default function DashboardPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <p className="text-primary font-mono text-xs tracking-[0.2em] uppercase mb-1">
-                Dashboard Portfolio
+                {t('dashboard_label')}
               </p>
               <h2 className="font-display font-bold text-on-surface mb-2"
                 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}>
-                Welcome back, {user?.username}
+                {t('welcome_back_user')} {user?.username}
               </h2>
               <p className="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
-                Manage your estate listings and monitor your exclusive property portfolio.
+                {t('manage_listings_desc')}
               </p>
             </div>
             <div className="flex gap-3 flex-shrink-0">
@@ -128,13 +130,13 @@ export default function DashboardPage() {
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
-                New Listing
+                {t('new_listing')}
               </Link>
               <Link
                 to="/profile"
                 className="border border-secondary/40 text-secondary px-6 py-3 rounded-lg font-semibold text-xs uppercase tracking-wider hover:bg-secondary/10 transition-all"
               >
-                Profile
+                {t('profile')}
               </Link>
             </div>
           </div>
@@ -159,18 +161,18 @@ export default function DashboardPage() {
         {/* ── Active Listings ─────────────────────────────── */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="font-display font-semibold text-on-surface text-2xl">Active Listings</h3>
+            <h3 className="font-display font-semibold text-on-surface text-2xl">{t('active_listings')}</h3>
             <span className="text-on-surface-variant text-xs font-mono uppercase tracking-widest">
-              {properties.length} {properties.length === 1 ? 'property' : 'properties'}
+              {t('properties_count')(properties.length)}
             </span>
           </div>
 
           {properties.length === 0 ? (
             <div className="glass-card p-16 rounded-xl text-center">
-              <p className="font-display text-on-surface text-2xl mb-2">No listings yet</p>
-              <p className="text-on-surface-variant mb-6">Start building your portfolio today.</p>
+              <p className="font-display text-on-surface text-2xl mb-2">{t('no_listings_yet')}</p>
+              <p className="text-on-surface-variant mb-6">{t('start_building')}</p>
               <Link to="/listings/create" className="btn-primary inline-block">
-                Create Your First Listing
+                {t('create_first_listing')}
               </Link>
             </div>
           ) : (
@@ -189,7 +191,7 @@ export default function DashboardPage() {
                     {/* Status badge */}
                     <div className="absolute top-4 left-4 z-20">
                       <span className="bg-primary/10 text-primary border border-primary/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest backdrop-blur-md">
-                        Active
+                        {t('active')}
                       </span>
                     </div>
                     {/* Price overlay */}
@@ -220,19 +222,19 @@ export default function DashboardPage() {
                         to={`/listings/edit/${p._id}`}
                         className="flex-1 border border-secondary/40 text-secondary py-2 rounded-lg text-xs font-semibold uppercase tracking-wider hover:bg-secondary/10 transition-all flex items-center justify-center gap-1.5"
                       >
-                        <EditIcon /> Edit
+                        <EditIcon /> {t('edit')}
                       </Link>
                       <Link
                         to={`/properties/${p._id}`}
                         className="flex-1 bg-surface-container-highest text-on-surface py-2 rounded-lg text-xs font-semibold uppercase tracking-wider hover:bg-white/10 transition-all flex items-center justify-center gap-1.5"
                       >
-                        <EyeIcon /> View
+                        <EyeIcon /> {t('view')}
                       </Link>
                       <button
                         onClick={() => handleDelete(p._id)}
                         disabled={deletingId === p._id}
                         className="px-3 py-2 rounded-lg bg-error/10 text-error hover:bg-error/20 transition-all flex items-center justify-center disabled:opacity-50"
-                        title="Delete listing"
+                        title={t('edit')}
                       >
                         {deletingId === p._id
                           ? <span className="text-xs">…</span>
@@ -254,7 +256,7 @@ export default function DashboardPage() {
               <svg className="w-5 h-5 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
               </svg>
-              <h3 className="font-display font-semibold text-on-surface text-xl">Listing Performance</h3>
+              <h3 className="font-display font-semibold text-on-surface text-xl">{t('listing_performance')}</h3>
             </div>
             <div className="glass-card h-72 rounded-xl p-6 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 opacity-10 pointer-events-none"
@@ -263,7 +265,7 @@ export default function DashboardPage() {
                 <svg className="w-12 h-12 text-primary mx-auto mb-3 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6.75v6.75" />
                 </svg>
-                <p className="text-on-surface-variant text-sm">Analytics dashboard coming soon</p>
+                <p className="text-on-surface-variant text-sm">{t('analytics_soon')}</p>
               </div>
             </div>
           </div>
@@ -274,11 +276,11 @@ export default function DashboardPage() {
               <svg className="w-5 h-5 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="font-display font-semibold text-on-surface text-xl">Recent Activity</h3>
+              <h3 className="font-display font-semibold text-on-surface text-xl">{t('recent_activity')}</h3>
             </div>
             <div className="flex flex-col gap-3">
               {properties.length === 0 ? (
-                <p className="text-on-surface-variant text-sm">No activity yet.</p>
+                <p className="text-on-surface-variant text-sm">{t('no_activity')}</p>
               ) : (
                 properties.slice(0, 4).map((p, i) => (
                   <div key={p._id}
@@ -288,7 +290,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-on-surface text-xs font-medium line-clamp-1">
-                        Listed: <strong>{p.title}</strong>
+                        {t('listed_label')} <strong>{p.title}</strong>
                       </p>
                       <p className="text-on-surface-variant text-xs mt-0.5">
                         {p.city} · FCFA {Number(p.price).toLocaleString()}
